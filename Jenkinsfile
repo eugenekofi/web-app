@@ -11,5 +11,11 @@ pipeline{
                  git branch: 'main', url: 'https://github.com/eugenekofi/web-app.git',changelog: true, poll: true
             }
         }
+
+        stage('clean and package'){
+            steps{
+                sh 'mvn clean package'
+            }
+        }
     }
 }
