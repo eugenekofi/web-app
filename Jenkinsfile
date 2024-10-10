@@ -8,11 +8,11 @@ pipeline{
     stages{
         stage('git checkout'){
             steps{
-                 git branch: 'main', url: 'https://github.com/eugenekofi/web-app.git',
+                 git branch: 'main', url: 'https://github.com/eugenekofi/web-app.git'
             }
         }
 
-        stage('maven build'){
+        stage('clean and package'){
             steps{
                 sh 'mvn clean package'
             }
@@ -20,14 +20,20 @@ pipeline{
 
         stage('code analysis'){
             environment{
-                ScannerHome=tool 'sonar'
+                ScannerHome = tool 'sonar'
             }
             steps{
                 script{
                     withSonarQubeEnv('sonar'){
-                      sh "${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=eugene-webapp"  
+                      sh "${ScannerHome}/bin/sonar-scanner -Dsonar.projectKey=eugenekofi-webapp"  
                     }
                 }
+            }
+        }
+
+        stage('nexus uploads'){
+            steps{
+               nexusArtifactUploader artifacts: [[artifactId: 'maven-web-application', classifier: '', file: '/var/lib/jenkins/workspace/jomacs-webapp-pipeline/target/web-app.war', type: 'war']], credentialsId: 'nexus-credentials1', groupId: 'com.mt', nexusUrl: '54.227.88.161:8081/repository/jomacs-webapp/', nexusVersion: 'nexus3', protocol: 'http', repository: 'jomacs-webapp', version: '3.8.1-RELEASE' 
             }
         }
     }
