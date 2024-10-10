@@ -8,11 +8,11 @@ pipeline{
     stages{
         stage('git checkout'){
             steps{
-                 git branch: 'main', url: 'https://github.com/eugenekofi/web-app.git',changelog: true, poll: true
+                 git branch: 'main', url: 'https://github.com/eugenekofi/web-app.git',
             }
         }
 
-        stage('clean and package'){
+        stage('maven build'){
             steps{
                 sh 'mvn clean package'
             }
