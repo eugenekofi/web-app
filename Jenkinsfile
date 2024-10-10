@@ -43,4 +43,15 @@ pipeline{
             }
         }
     }
+    post {
+        success {
+            slackSend channel: 'eudev', color: 'good', message: "Build successful: ${currentBuild.fullDisplayName}"
+        }
+        failure {
+            slackSend channel: 'eudev', color: 'danger', message: "Build failed: ${currentBuild.fullDisplayName}"
+        }
+        aborted {
+            slackSend channel: 'eudev', color: 'warning', message: "Build aborted: ${currentBuild.fullDisplayName}"
+        }
+    }
 }
